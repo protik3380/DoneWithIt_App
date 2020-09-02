@@ -13,7 +13,15 @@ import AppText from "./AppText";
 import Screen from "./Screen";
 import PicketItem from "./PicketItem";
 
-function AppPicker({ icon, items, selectedItem, onSelectItem, placeholder }) {
+function AppPicker({
+  icon,
+  items,
+  selectedItem,
+  onSelectItem,
+  placeholder,
+  PickerItemComponet = PicketItem,
+  numberOfColums = 1,
+}) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -28,9 +36,11 @@ function AppPicker({ icon, items, selectedItem, onSelectItem, placeholder }) {
               style={styles.icon}
             />
           )}
-          <AppText style={styles.text}>
-            {selectedItem ? selectedItem.label : placeholder}
-          </AppText>
+          {selectedItem ? (
+            <AppText style={styles.text}>{selectedItem.label}</AppText>
+          ) : (
+            <AppText style={styles.placeholder}>{placeholder}</AppText>
+          )}
           <MaterialCommunityIcons
             name="chevron-down"
             size={20}
@@ -53,9 +63,11 @@ function AppPicker({ icon, items, selectedItem, onSelectItem, placeholder }) {
           <FlatList
             data={items}
             keyExtractor={(item) => item.value.toString()}
+            numColumns={numberOfColums}
             renderItem={({ item }) => (
-              <PicketItem
-                label={item.label}
+              <PickerItemComponet
+                item={item}
+                //label={item.label}
                 onPress={() => {
                   setModalVisible(false);
                   onSelectItem(item);
@@ -80,6 +92,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  placeholder: {
+    color: colors.medium,
+    flex: 1,
   },
   text: {
     flex: 1,
